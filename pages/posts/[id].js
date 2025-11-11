@@ -31,35 +31,38 @@ export async function getStaticProps({ params }) {
 // This function tells Next.js which dynamic routes should be statically generated at build time
 export async function getStaticPaths() {
   // Get all available post IDs to determine which pages to generate
-  const paths = getAllPostIds();
+  const paths = await getAllPostIds();
   return {
     paths, // Array of paths to pre-render
     fallback: false, // If a path is not found, return 404 (no fallback generation)
   };
 }
 
+
+
 // Main React component that renders an individual blog post
 // Receives postData as props from getStaticProps
 export default function Post({ postData }) {
     return (
-      // Wrap the content in the Layout component for consistent page structure
+    // Wrap the content in the Layout component for consistent page structure
       <Layout>
         {/* Use Next.js Head component to set the page title dynamically */}
         <Head>
-          <title>{postData.title}</title>
+          <title>{postData.post_title}</title>
         </Head>
         {/* Main article container with blog-specific styling */}
         <article className={utilStyles.blogArticle}>
           {/* Display the post title as the main heading */}
-          <h1 className={utilStyles.headingXl}>{postData.title}</h1>
+          <h1 className={utilStyles.headingXl}>{postData.post_title}</h1>
           {/* Date container with custom styling */}
           <div className={utilStyles.dateTextPost}>
+            <p>{postData.post_date}</p>
             {/* Use custom Date component to format and display the post date */}
-            <Date dateString={postData.date} />
+            {/*<Date dateString={postData.date} />*/}
           </div>
           {/* Render the post content as HTML (converted from Markdown) */}
           {/* dangerouslySetInnerHTML is used because the content is trusted HTML from our build process */}
-          <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
+          {/*<div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
           <div className={utilStyles.friendImage}>
             <Image
                 priority
@@ -69,8 +72,10 @@ export default function Post({ postData }) {
                 width={108}
                 alt= {postData.altText}
               />
-          </div>
-        </article>
+          </div>*/}
+         </article>
       </Layout>
     );
   }
+
+  

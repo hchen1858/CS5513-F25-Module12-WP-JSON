@@ -17,7 +17,7 @@ import Date from '../components/date';
 // This function fetches data before the page is rendered, enabling static site generation (SSG)
 export async function getStaticProps() {
   // Fetch and sort all blog post data from the markdown files in the posts directory
-  const allPostsData = getSortedPostsData();
+  const allPostsData = await getSortedPostsData();
   // Return the data as props that will be passed to the Home component
   return {
     props: {
@@ -40,20 +40,20 @@ export default function Home({allPostsData}) {
       {/* Create a section with heading styles for the main content */}
       <section className={utilStyles.headingMd}>
         {/* Display a personal introduction message */}
-        <p>Hello, I'm Helen the British Blue cat. I'm just starting to learn the uses of Next.js</p>
+        <p>Hello, I'm Helen the British Blue cat. I'm just starting to learn the uses of WordPress REST.</p>
         {/* Display a sample website notice with a link to the Next.js tutorial */}
         <p>
           (This is a sample website - that I'm building on{' '}
-          <a href="https://nextjs.org/learn">our Next.js tutorial</a>.)
+          <a href="https://nextjs.org/learn">our Next.js tutorial plus the WordPress REST framework</a>.)
         </p>
         {/* Display a playful comment from the cat character expressing pride in their blog creation */}
-        <p>Pretty good for a cat's first effort at a blog, huh?!!</p>
+        <p>Pretty good for a cat's first effort at getting JSON data into a WordPress REST endpoint, huh?!!</p>
       </section>
 
        {/* Blog section that displays a list of all available blog posts */}
        <section className={`${utilStyles.headingMd} ${utilStyles.padding1px} ${utilStyles.blogSection}`}>
         {/* Section heading for the blog posts list */}
-        <h2 className={utilStyles.headingLg}>A British Blue Cat's Blog</h2>
+        <h2 className={utilStyles.headingLg}>Posts Published in WP Endpoint </h2>
         {/* Unordered list container for all blog post entries */}
         <ul className={utilStyles.list}>
           {/* Map through each blog post in allPostsData to create individual list items */}
