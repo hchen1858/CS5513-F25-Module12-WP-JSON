@@ -1,7 +1,11 @@
 
-//This is a php file that is one of two files needed in the twentytwentyfive-child theme to create the REST endpoint in WordPress
 
-?php
+
+<?php
+
+//This is a php file that is one of two files needed in the twentytwentyfive-child theme to create the REST endpoint in WordPress
+//This is an archive copy under the "extras" folder for future reference so everything is in one place
+
     //Step 1. Tell the WordPress API to load our partent theme's css styles
 
     // In 2 parts: (1) call a built-in function in WP API named add_action() that extends the WP API with customer code
@@ -22,8 +26,8 @@
 
     }
 
-    //Step 2: Tell SP API to register a new REST url endpoint
-    // In 2 parts:  (1) Call built-in add_action() to extend the WP API with customer code
+    //Step 2: Tell WP API to register a new REST url endpoint
+    // In 2 parts:  (1) Call built-in add_action() to extend the WP API with custom code
     add_action('rest_api_init', 'register_custom_endpoint');
 
     // Add our customer function to register the new REST endpoint URL
@@ -66,4 +70,40 @@
         return $response;
     }
 
+// Week 14: adding custom endpoint for extracting subset data from wp_posts table for image URLs from catid and cattoys custom tables
+// Each ACF post type with image field has an image ID post number stored in the wp_posts table under column "id" with the URL string in the "guid" column
+// Uses the global $wpdb object to run a custom SQL query to get data from wp_posts table that is focused to desired images and minimizes data transfer size
+    add_action('rest_api_init', 'register_cat_table_endpoint');
+
+    function register_cat_table_endpoint() {
+        register_rest_route('twentytwentyfive-child/v1', '/cat-images', array(
+            'methods' => 'GET',
+            'callback' => 'get_catimages_via_sql'
+        ));
+    }
+
+    function get_catimages_via_sql($request) {
+        //Get access to the $wpdb global variable
+        global $wpdb;
+
+        // Get WordPress SQL table prefix string to use in query, typically "wp_" but could be different
+        $pre = $wpdb-> prefix;
+        // Define a SQL query string
+        $query = "SELECT * FROM " . $pre . "posts" . " WHERE post_type = 'attachment'";
+        // Call the built-in method get_restuls() in the $wpdb glocbal object
+        $results = $wpdb -> get_results($query);     
+
+        //IF result is empty send back and error
+        if (empty($results)) {
+            return new WP_Error('no_data', 'No data found in custom table', array('status' => 404));
+        }
+
+        //Send back the data for the found posts in the target table using WP REST API
+        $response = new WP_REST_Response($results);
+        //console.log($responseid);
+        $response->set_status(200);
+        return $response;
+    } 
+
 ?>
+
